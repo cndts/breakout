@@ -7,8 +7,9 @@ game.setAntialiasing(false);
 game.backgroundColor = ex.Color.Black;
 
 var loader = new ex.Loader();
-
 var audio = new Audio('/home/praktikum/git/breakout/sound/bounce.wav');
+var audio1 = new Audio('/home/praktikum/git/breakout/sound/bounce.wav');
+var audio2 = new Audio('/home/praktikum/git/breakout/sound/bounce.wav');
 var intro = new Audio('/home/praktikum/git/breakout/sound/Intro.wav');
 var verloren = new Audio('/home/praktikum/git/breakout/sound/verloren.wav')
 
@@ -60,13 +61,13 @@ ball.on('postupdate', function() {
   // Rechts
   if (this.pos.x + (this.getWidth() / 2) > game.drawWidth) {
     this.vel.x *= -1;
-    audio.play();
+    audio1.play();
   }
 
   // Oben
   if (this.pos.y < (this.getHeight() / 2)) {
     this.vel.y *= -1;
-    audio.play();
+    audio2.play();
   }
 });
 
