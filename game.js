@@ -125,7 +125,7 @@ for (var j = 0; j < rows; j++) {
   a++
   for (var i = 0; i < columns; i++) {
     b++
-    if (i % 2 == 1) {
+    if (i % 3 == 1) {
       var speedy = ex.Actor.extend({
         typ: "Speedy",
         getTyp: function() {
