@@ -188,6 +188,7 @@ ball.on('precollision', function(ev) {
 
   // Wenn der Ball einen Block berührt, zerstöre ihn und erhöhe die Punkte
   if (bricks.indexOf(ev.other) > -1) {
+
     // neue Kollisionsitem ableiten
     var collisionItem = (items[bricks.indexOf(ev.other)]);
 
