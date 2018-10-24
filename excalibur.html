@@ -1,11 +1,21 @@
 <html>
 <head>
+<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Breakout in Excalibur</title>
+    <link href="style.css" rel="stylesheet" />
+   <div class="a">Breakout</div>
 </head>
 <body>
-
-    <!-- Include your script at the end of the body tag -->
+	
+	<div class="container">
+        
+        <i id="sound" class="fa fa-fw fa-2x fa-volume-up"></i>
+    	</div>
     <script src="node_modules/excalibur/dist/excalibur.min.js"></script>
     <script src="game.js"></script>
+    <a onClick="window.location.reload()" class="restart">Restart</a>
+<canvas id="game"></canvas>
 
 </body>
 </html>

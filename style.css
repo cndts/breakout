@@ -1,0 +1,73 @@
+﻿body {
+    font-family: Font;
+    background-color: white;
+    
+}
+
+@font-face {
+   font-family: Font;
+   src: url(/home/praktikum/git/breakout/sound/fipps/flips.otf);
+}
+
+@font-face {
+   font-family: Font;
+   src: url(/home/praktikum/git/breakout/sound/fipps/flips.otf);
+   font-weight: bold;
+}
+
+@font-face {
+   font-family: Verloren;
+   src: url(/home/praktikum/git/breakout/sound/Press2Play/press2play.ttf);
+}
+
+@font-face {
+   font-family: Verloren;
+   src: url(/home/praktikum/git/breakout/sound/Press2Play/press2play.ttf);
+   font-weight: bold;
+}
+
+div.a {
+	font-size: 600%;
+	margin-top: 0px;
+    text-align: center;
+}
+
+canvas {
+    margin: auto;
+    display: block;
+    border-radius: 20px;
+    max-width: 100%;
+    cursor: none;
+    -ms-touch-action:none;
+}
+
+.container {
+    display: block;
+    margin: auto;
+    max-width: 1066px;
+}
+
+.restart {
+	margin-left: 900px;
+	margin-top: 10px;
+	background-color:#3d94f6;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:28px;
+	border:1px solid #337fed;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Courier New;
+	font-size:18px;
+	padding:4px 10px;
+	text-decoration:none;
+}
+.restart:hover {
+	background-color: blue;
+}
+.restart:active {
+	position:relative;
+	top:1px;
+}
+
