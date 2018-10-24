@@ -119,6 +119,8 @@ var itemColor = [ex.Color.None, ex.Color.None, ex.Color.None];
 var a = 0
 var b = 0
 
+
+
 // Blöcke und Items erzeugen
 var brickWidth = game.drawWidth / columns - padding - padding / columns; // px
 var itemWidth = (game.drawWidth / columns - padding - padding / columns) / 3.75; // px
@@ -130,7 +132,40 @@ for (var j = 0; j < rows; j++) {
   a++
   for (var i = 0; i < columns; i++) {
     b++
-    if (i % 2 == 1) {
+
+
+
+
+    // Block Array erzeugen
+    bricks.push(new ex.Actor(xoffset + i * (brickWidth + padding) + padding, yoffset + j * (brickHeight + padding) + padding, brickWidth, brickHeight, brickColor[j % brickColor.length]));
+
+  }
+}
+
+
+
+
+// dann darüber die Blöcke
+bricks.forEach(function(brick) {
+  //Kollision
+  brick.collisionType = ex.CollisionType.Active;
+  // Block hinzufügen
+  game.add(brick);
+});
+
+var score = 0;
+var r = Math.floor(Math.random() * bricks.length + 1);
+
+ball.on('precollision', function(ev) {
+  audio.play();
+  var speedup = 0;
+
+  // Wenn der Ball einen Block berührt, zerstöre ihn und erhöhe die Punkte
+  if (bricks.indexOf(ev.other) > -1) {
+
+
+    if (r  == bricks.indexOf(ev.other) ) {
+      r = Math.floor(Math.random() * bricks.length + 1);
       var speedy = ex.Actor.extend({
         typ: "Speedy",
         getTyp: function() {
@@ -143,82 +178,56 @@ for (var j = 0; j < rows; j++) {
 
       });
 
-      var actor = new speedy(xoffset + i * ((itemWidth + padding) * 2.75) + padding, yoffset + j * ((itemHeight + padding) * 1.2) + padding, itemWidth, itemHeight, ex.Color.Green);
+      var collisionItem = new speedy(ev.other.x, ev.other.y, 20, 20, ex.Color.Green);
 
-    } else {
+      game.add(collisionItem);
 
-      var slowy = ex.Actor.extend({
-        typ: "Slowy",
-        getTyp: function() {
-          return (this.typ);
-        },
-        getSpeed: function() {
-          return (0.9);
+      collisionItem.collisionType = ex.CollisionType.Passive;
+      collisionItem.on('precollision', function(ev) {
 
+        if (ev.other.id == 0) {
+
+          // Paddle getroffen, geht bestimmt noch besser,
+          // da man nicht davon ausgehen kann, dass paddle id 0 hat
+
+          // Speedup aus dem Item holen
+          speedup = collisionItem.getSpeed();
+
+
+          ball.vel.x = ball.vel.x * speedup;
+          ball.vel.y = ball.vel.y * speedup;
+
+          // zerstöre das Item
+          collisionItem.kill();
         }
       });
 
-      var actor = new slowy(xoffset + i * ((itemWidth + padding) * 2.75) + padding, yoffset + j * ((itemHeight + padding) * 1.2) + padding, itemWidth, itemHeight, ex.Color.Red)
+      // Item fallen lassen
+      collisionItem.vel.setTo(0, 200);
+
     }
 
-    // Item Array erzeugen
-    items.push(actor);
-
-    // Block Array erzeugen
-    bricks.push(new ex.Actor(xoffset + i * (brickWidth + padding) + padding, yoffset + j * (brickHeight + padding) + padding, brickWidth, brickHeight, brickColor[j % brickColor.length]));
-
-  }
-}
-
-// erst die Items hinzufügen
-items.forEach(function(item) {
-  // Block hinzufügen
-  game.add(item);
-});
-
-// dann darüber die Blöcke
-bricks.forEach(function(brick) {
-  //Kollision
-  brick.collisionType = ex.CollisionType.Active;
-  // Block hinzufügen
-  game.add(brick);
-});
-
-var score = 0;
 
 
-ball.on('precollision', function(ev) {
-  audio.play();
-  var speedup = 0;
-
-  // Wenn der Ball einen Block berührt, zerstöre ihn und erhöhe die Punkte
-  if (bricks.indexOf(ev.other) > -1) {
-
-    // neue Kollisionsitem ableiten
-    var collisionItem = (items[bricks.indexOf(ev.other)]);
-
-    collisionItem.collisionType = ex.CollisionType.Passive;
-    collisionItem.on('precollision', function(ev) {
-
-      if (ev.other.id == 0) {
-
-        // Paddle getroffen, geht bestimmt noch besser,
-        // da man nicht davon ausgehen kann, dass paddle id 0 hat
-
-        // Speedup aus dem Item holen
-        speedup = collisionItem.getSpeed();
+    // else {
+    //
+    //   var slowy = ex.Actor.extend({
+    //     typ: "Slowy",
+    //     getTyp: function() {
+    //       return (this.typ);
+    //     },
+    //     getSpeed: function() {
+    //       return (0.9);
+    //
+    //     }
+    //   });
+    //
+    //   var actor = new slowy(xoffset + i * ((itemWidth + padding) * 2.75) + padding, yoffset + j * ((itemHeight + padding) * 1.2) + padding, itemWidth, itemHeight, ex.Color.Red)
+    // }
 
 
-        ball.vel.x = ball.vel.x * speedup;
-        ball.vel.y = ball.vel.y * speedup;
 
-        // zerstöre das Item
-        collisionItem.kill();
-      }
-    });
 
-    // Item fallen lassen
-    collisionItem.vel.setTo(0, 200);
 
     // Punktzahl erhöhen
     score++;
@@ -261,11 +270,12 @@ var label = new ex.Label();
 label.x = 50;
 label.y = 600;
 label.fontFamily = "Arial";
-label.fontSize = 30;
+label.fontSize = 25;
 label.fontUnit = ex.FontUnit.Px
 label.text = "     Score: 0";
 label.color = ex.Color.White;
 label.textAlign = ex.TextAlign.Center;
+label.fontFamily = "Verloren, Arial, Sans-Serif"
 
 game.add(label);
 
