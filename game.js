@@ -8,12 +8,12 @@ game.setAntialiasing(false);
 game.backgroundColor = ex.Color.fromHex("#000080");
 var paddle = new ex.Actor(50, game.drawHeight - 40, 150, 20);
 var audio = new Audio('/home/praktikum/git/breakout/sound/plop.wav');
-var intro = new Audio('/home/praktikum/git/breakout/sound/intro.wav');
+var intro = new Audio('/home/praktikum/git/breakout/sound/powerup.wav');
 var verloren = new Audio('/home/praktikum/git/breakout/sound/gameover.wav')
 var gewonnen = new Audio('/home/praktikum/git/breakout/sound/win.wav')
-var powerup = new Audio('home/praktikum/git/breakout/sound/powerup.wav')
-var badpowerup = new Audio('home/praktikum/git/breakout/sound/wrongitem.wav')
-var loader = new ex.Loader(audio, intro, verloren, gewonnen, powerup, badpowerup, paddle);
+
+
+var loader = new ex.Loader(intro, verloren, gewonnen, audio, paddle);
 
 
 
@@ -32,7 +32,7 @@ paddle.collisionType = ex.CollisionType.Fixed;
 // Objekt hinzufügen
 game.add(paddle);
 
-intro.play();
+
 intro.volume = 0.2;
 // Maus bewegungen erkennen
 game.input.pointers.primary.on('move', function(evt) {
@@ -88,23 +88,7 @@ ball.draw = function(ctx, delta) {
 // Ball hinzufügen
 game.add(ball);
 
-ball.on('exitviewport', function() {
-  verloren.play();
-  var label1 = new ex.Label();
-  label1.x = 400;
-  label1.y = 340;
-  label1.fontFamily = "Arial";
-  label1.fontSize = 80;
-  label1.fontUnit = ex.FontUnit.Px
-  label1.text = "Verloren";
-  label1.color = ex.Color.Chartreuse;
-  label1.textAlign = ex.TextAlign.Center;
-  label1.fontFamily = "Verloren, Arial, Sans-Serif";
-  game.add(label1);
-  paddle.kill();
-  audio = false;
 
-});
 
 // Lücken zwischen und neben den Blöcken
 var padding = 20;
@@ -202,6 +186,7 @@ ball.on('precollision', function(ev) {
 
       collisionItem.collisionType = ex.CollisionType.Passive;
       collisionItem.on('precollision', function(ev) {
+      intro.play();
 
         if (ev.other.id == 0) {
 
@@ -209,6 +194,7 @@ ball.on('precollision', function(ev) {
           // da man nicht davon ausgehen kann, dass paddle id 0 hat
 
           // Speedup aus dem Item holen
+
           speedup = collisionItem.getSpeed();
 
 
@@ -217,14 +203,58 @@ ball.on('precollision', function(ev) {
 
           // zerstöre das Item
           collisionItem.kill();
+
         }
       });
 
       // Item fallen lassen
       collisionItem.vel.setTo(0, 200);
 
-    } else {
-      r = Math.floor(Math.random() * 2)};
+    }else {
+      r = Math.floor(Math.random() * 3)};
+
+    // if (r == 2)  {
+    //   r = Math.floor(Math.random() * 3);
+    //
+    //     var slowy = ex.Actor.extend({
+    //       typ: "Slowy",
+    //       getTyp: function() {
+    //         return (this.typ);
+    //       },
+    //       getSpeed: function() {
+    //         return (0.9);
+    //
+    //       }
+    //     });
+    //
+    //   var collisionItem = new slowy(ev.other.x, ev.other.y, 20, 20, ex.Color.red);
+    //
+    //   game.add(collisionItem);
+    //   collisionItem.collisionType = ex.CollisionType.Passive;
+    //   collisionItem.on('precollision', function(ev) {
+    //
+    //     if (ev.other.id == 0) {
+    //
+    //       // Paddle getroffen, geht bestimmt noch besser,
+    //       // da man nicht davon ausgehen kann, dass paddle id 0 hat
+    //
+    //       // Speedup aus dem Item holen
+    //       speedup = collisionItem.getSpeed();
+    //
+    //
+    //       ball.vel.x = ball.vel.x * speedup;
+    //       ball.vel.y = ball.vel.y * speedup;
+    //
+    //       // zerstöre das Item
+    //       collisionItem.kill();
+    //     }
+    //   });
+    //
+    //   // Item fallen lassen
+    //   collisionItem.vel.setTo(0, 200);
+    //
+    // }
+
 
 
 
@@ -257,8 +287,7 @@ ball.on('precollision', function(ev) {
   }
 
   if (score == bricks.length) {
-    gewonnen.play();
-    var label1 = new ex.Label();
+    var label2 = new ex.Label();
     label2.x = 400;
     label2.y = 360;
     label2.fontFamily = "Arial";
@@ -270,7 +299,11 @@ ball.on('precollision', function(ev) {
     label2.fontFamily = "Verloren, Arial, Sans-Serif";
     game.add(label2);
     paddle.kill();
+    ball.kill();
+    label.kill();
     audio = false;
+    gewonnen.play();
+    
   }
 
   // reverse course after any collision
@@ -297,6 +330,29 @@ label.textAlign = ex.TextAlign.Center;
 label.fontFamily = "Verloren, Arial, Sans-Serif"
 
 game.add(label);
+
+ball.on('exitviewport', function() {
+  verloren.play();
+  var label1 = new ex.Label();
+  label1.x = 400;
+  label1.y = 340;
+  label1.fontFamily = "Arial";
+  label1.fontSize = 80;
+  label1.fontUnit = ex.FontUnit.Px
+  label1.text = "Verloren";
+  label1.color = ex.Color.Chartreuse;
+  label1.textAlign = ex.TextAlign.Center;
+  label1.fontFamily = "Verloren, Arial, Sans-Serif";
+  game.add(label1);
+  paddle.kill();
+  audio = false;
+  ball.kill();
+  label.fontSize = 50;
+  label.x = 300;
+  label.y = 390;
+
+
+});
 
 // Engine starten
 game.start();
