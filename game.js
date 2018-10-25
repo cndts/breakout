@@ -15,26 +15,21 @@ var gewonnen = new Audio('/home/praktikum/git/breakout/sound/win.wav')
 
 var loader = new ex.Loader(intro, verloren, gewonnen, audio, paddle);
 
-
-
 game.start(loader);
 
-// Position und Größe
-
-
-// Farbe
+// Farbe des Paddles
 paddle.color = ex.Color.Chartreuse;
 
-// Kollision
+// Kollisionstyp des Paddles
 paddle.collisionType = ex.CollisionType.Fixed;
 
-
-// Objekt hinzufügen
+// Paddle hinzufügen
 game.add(paddle);
 
-
+// Lautstärke der Hintergrundmusik
 intro.volume = 0.2;
-// Maus bewegungen erkennen
+
+// Mausbewegungen erkennen und auf Paddle übertragen
 game.input.pointers.primary.on('move', function(evt) {
   paddle.pos.x = evt.worldPos.x;
 
@@ -43,18 +38,17 @@ game.input.pointers.primary.on('move', function(evt) {
 // Ball entstehen lassen
 var ball = new ex.Actor(100, 300, 20, 20);
 
-// Farbe
+// Farbe des Balls
 ball.color = ex.Color.Red;
 
-// Geschwindigkeit
+// Geschwindigkeit des Balls
 var h = 240;
 ball.vel.setTo(h, h);
 
-// Kollision
+// Kollisionstyp des Balls
 ball.collisionType = ex.CollisionType.Aktive;
 
-
-
+// Ball trifft Wand
 ball.on('postupdate', function() {
 
   // Links
@@ -76,7 +70,7 @@ ball.on('postupdate', function() {
   }
 });
 
-// Ball machen
+// Ball erstellen
 ball.draw = function(ctx, delta) {
   ctx.fillStyle = this.color.toString();
   ctx.beginPath();
@@ -87,8 +81,6 @@ ball.draw = function(ctx, delta) {
 
 // Ball hinzufügen
 game.add(ball);
-
-
 
 // Lücken zwischen und neben den Blöcken
 var padding = 20;
@@ -103,9 +95,7 @@ var itemColor = [ex.Color.None, ex.Color.None, ex.Color.None];
 var a = 0
 var b = 0
 
-
-
-// Blöcke und Items erzeugen
+// Blöcke erzeugen
 var brickWidth = game.drawWidth / columns - padding - padding / columns; // px
 var itemWidth = (game.drawWidth / columns - padding - padding / columns) / 3.75; // px
 var brickHeight = 30;
@@ -116,20 +106,12 @@ for (var j = 0; j < rows; j++) {
   a++
   for (var i = 0; i < columns; i++) {
     b++
-
-
-
-
     // Block Array erzeugen
     bricks.push(new ex.Actor(xoffset + i * (brickWidth + padding) + padding, yoffset + j * (brickHeight + padding) + padding, brickWidth, brickHeight, brickColor[j % brickColor.length]));
-
   }
 }
 
-
-
-
-// dann darüber die Blöcke
+// Blöcke hinzufügen
 bricks.forEach(function(brick) {
   //Kollision
   brick.collisionType = ex.CollisionType.Active;
@@ -138,23 +120,66 @@ bricks.forEach(function(brick) {
 });
 
 var score = 0;
-if(bricks.length <= 15)
+var steineübrig = bricks.length;
+var itemsdropped = 0
+var itemsmax = Math.round(bricks.length / 3);
+//var itemsmax =  Math.round(bricks.length); // zum testen immer ein Item droppen
 
-var r = Math.floor(Math.random() * 3);
-console.log(r);
+// Item vom Typ Speedy
+var speedy = ex.Actor.extend({
+  typ: "Speedy",
+  getTyp: function() {
+    return (this.typ);
+  },
+  getSpeed: function() {
+    return (1.2);
+  },
+  getPaddleSize: function() {
+    return (150);
+  }
+});
 
+// Item vom Typ Slowy
+var slowy = ex.Actor.extend({
+    typ: "Slowy",
+    getTyp: function() {
+      return (this.typ);
+    },
+    getSpeed: function() {
+      return (0.9);
+    },
+    getPaddleSize: function() {
+      return (150);
+    }
+  });
 
+// Item vom Typ BigPaddle
+var bigpaddle = ex.Actor.extend({
+    typ: "BigPaddle",
+    getTyp: function() {
+      return (this.typ);
+    },
+    getSpeed: function() {
+      return (1);
+    },
+    getPaddleSize: function() {
+      return (250);
+    }
+  });
 
-
-
-
-
-
-
-
-
-
-
+// Item vom Typ SmallPaddle
+var smallpaddle = ex.Actor.extend({
+    typ: "SmallPaddle",
+    getTyp: function() {
+      return (this.typ);
+    },
+    getSpeed: function() {
+      return (1);
+    },
+    getPaddleSize: function() {
+      return (50);
+    }
+  });
 
 ball.on('precollision', function(ev) {
   audio.play();
@@ -163,43 +188,57 @@ ball.on('precollision', function(ev) {
   // Wenn der Ball einen Block berührt, zerstöre ihn und erhöhe die Punkte
   if (bricks.indexOf(ev.other) > -1) {
 
+    var dropit = false;
 
-    if (r == 1)  {
-      r = Math.floor(Math.random() * 3);
+    // Zufallszahl ob Item gedroppt werden soll
+    var mathrandom = (Math.floor(Math.random() * 3));
 
-      var speedy = ex.Actor.extend({
-        typ: "Speedy",
-        getTyp: function() {
-          return (this.typ);
-        },
-        getSpeed: function() {
-          return (1.2);
+    // ein Item soll immer fallen, wenn minimale Anzahl nicht mehr erreicht werden kann
+    if (itemsmax - itemsdropped == steineübrig) {
+      dropit = true;
+    } else if (mathrandom == 1) {
+        dropit = true;
+    }
 
-        }
+    // Item soll fallen
+    if (dropit == true) {
 
-
-      });
-
-      var collisionItem = new speedy(ev.other.x, ev.other.y, 20, 20, ex.Color.Green);
-
+      // Zufallszahl welches Item erscheinen soll
+      var mathrandom2 = Math.random();
+      console.log(mathrandom2);
+      if (mathrandom2 <= 0.25) {
+        var collisionItem = new speedy(ev.other.x, ev.other.y, 20, 20, ex.Color.Green);
+      }
+      if (mathrandom2 > 0.25 &&  mathrandom2 <= 0.5) {
+        var collisionItem = new slowy(ev.other.x, ev.other.y, 20, 20, ex.Color.Red);
+      }
+      if (mathrandom2 > 0.5 &&  mathrandom2 <= 0.75) {
+        var collisionItem = new bigpaddle(ev.other.x, ev.other.y, 20, 20, ex.Color.Yellow);
+      }
+      if (mathrandom2 > 0.75) {
+        var collisionItem = new smallpaddle(ev.other.x, ev.other.y, 20, 20, ex.Color.Orange);
+      }
+      itemsdropped++;
       game.add(collisionItem);
 
+      // Funktion um Kollision von Item und Paddle zu prüfen
       collisionItem.collisionType = ex.CollisionType.Passive;
       collisionItem.on('precollision', function(ev) {
-      intro.play();
-
         if (ev.other.id == 0) {
-
           // Paddle getroffen, geht bestimmt noch besser,
           // da man nicht davon ausgehen kann, dass paddle id 0 hat
+
+          intro.play();
 
           // Speedup aus dem Item holen
 
           speedup = collisionItem.getSpeed();
 
-
           ball.vel.x = ball.vel.x * speedup;
           ball.vel.y = ball.vel.y * speedup;
+
+          paddlewidth = collisionItem.getPaddleSize();
+          paddle.setWidth(paddlewidth);
 
           // zerstöre das Item
           collisionItem.kill();
@@ -210,75 +249,10 @@ ball.on('precollision', function(ev) {
       // Item fallen lassen
       collisionItem.vel.setTo(0, 200);
 
-    }else {
-      r = Math.floor(Math.random() * 3)};
+    }
 
-    // if (r == 2)  {
-    //   r = Math.floor(Math.random() * 3);
-    //
-    //     var slowy = ex.Actor.extend({
-    //       typ: "Slowy",
-    //       getTyp: function() {
-    //         return (this.typ);
-    //       },
-    //       getSpeed: function() {
-    //         return (0.9);
-    //
-    //       }
-    //     });
-    //
-    //   var collisionItem = new slowy(ev.other.x, ev.other.y, 20, 20, ex.Color.red);
-    //
-    //   game.add(collisionItem);
-    //   collisionItem.collisionType = ex.CollisionType.Passive;
-    //   collisionItem.on('precollision', function(ev) {
-    //
-    //     if (ev.other.id == 0) {
-    //
-    //       // Paddle getroffen, geht bestimmt noch besser,
-    //       // da man nicht davon ausgehen kann, dass paddle id 0 hat
-    //
-    //       // Speedup aus dem Item holen
-    //       speedup = collisionItem.getSpeed();
-    //
-    //
-    //       ball.vel.x = ball.vel.x * speedup;
-    //       ball.vel.y = ball.vel.y * speedup;
-    //
-    //       // zerstöre das Item
-    //       collisionItem.kill();
-    //     }
-    //   });
-    //
-    //   // Item fallen lassen
-    //   collisionItem.vel.setTo(0, 200);
-    //
-    // }
-
-
-
-
-    // else {
-    //
-    //   var slowy = ex.Actor.extend({
-    //     typ: "Slowy",
-    //     getTyp: function() {
-    //       return (this.typ);
-    //     },
-    //     getSpeed: function() {
-    //       return (0.9);
-    //
-    //     }
-    //   });
-    //
-    //   var actor = new slowy(xoffset + i * ((itemWidth + padding) * 2.75) + padding, yoffset + j * ((itemHeight + padding) * 1.2) + padding, itemWidth, itemHeight, ex.Color.Red)
-    // }
-
-
-
-
-
-    // Punktzahl erhöhen
+    // Punktzahl erhöhen und Anzahl übriger Steine berechnen
+    steineübrig--;
     score++;
     label.text = "     Score: " + score;
 
@@ -286,6 +260,7 @@ ball.on('precollision', function(ev) {
     ev.other.kill();
   }
 
+// gewonnen Label erstellen
   if (score == bricks.length) {
     var label2 = new ex.Label();
     label2.x = 400;
@@ -303,7 +278,7 @@ ball.on('precollision', function(ev) {
     label.kill();
     audio = false;
     gewonnen.play();
-    
+
   }
 
   // reverse course after any collision
@@ -318,6 +293,7 @@ ball.on('precollision', function(ev) {
   }
 });
 
+// Score Label
 var label = new ex.Label();
 label.x = 50;
 label.y = 600;
@@ -331,6 +307,7 @@ label.fontFamily = "Verloren, Arial, Sans-Serif"
 
 game.add(label);
 
+// Verloren Label
 ball.on('exitviewport', function() {
   verloren.play();
   var label1 = new ex.Label();
@@ -350,8 +327,6 @@ ball.on('exitviewport', function() {
   label.fontSize = 50;
   label.x = 300;
   label.y = 390;
-
-
 });
 
 // Engine starten
