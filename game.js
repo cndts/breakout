@@ -154,7 +154,23 @@ bricks.forEach(function(brick) {
 });
 
 var score = 0;
-var r = Math.floor(Math.random() * bricks.length + 1);
+if(bricks.length <= 15)
+
+var r = Math.floor(Math.random() * 3);
+console.log(r);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ball.on('precollision', function(ev) {
   audio.play();
@@ -164,8 +180,9 @@ ball.on('precollision', function(ev) {
   if (bricks.indexOf(ev.other) > -1) {
 
 
-    if (r  == bricks.indexOf(ev.other) ) {
-      r = Math.floor(Math.random() * bricks.length + 1);
+    if (r == 1)  {
+      r = Math.floor(Math.random() * 3);
+
       var speedy = ex.Actor.extend({
         typ: "Speedy",
         getTyp: function() {
@@ -175,6 +192,7 @@ ball.on('precollision', function(ev) {
           return (1.2);
 
         }
+
 
       });
 
@@ -205,7 +223,8 @@ ball.on('precollision', function(ev) {
       // Item fallen lassen
       collisionItem.vel.setTo(0, 200);
 
-    }
+    } else {
+      r = Math.floor(Math.random() * 2)};
 
 
 
