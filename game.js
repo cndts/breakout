@@ -1,20 +1,21 @@
+
+var rows = prompt("Reihen");
+var columns = prompt("Spalten");
 var game = new ex.Engine({
   width: 800,
   height: 600
 
 });
-
 game.setAntialiasing(false);
 game.backgroundColor = ex.Color.fromHex("#000080");
+
 var paddle = new ex.Actor(50, game.drawHeight - 40, 150, 20);
 var audio = new Audio('/home/praktikum/git/breakout/sound/plop.wav');
 var intro = new Audio('/home/praktikum/git/breakout/sound/powerup.wav');
 var verloren = new Audio('/home/praktikum/git/breakout/sound/gameover.wav')
 var gewonnen = new Audio('/home/praktikum/git/breakout/sound/win.wav')
 
-
 var loader = new ex.Loader(intro, verloren, gewonnen, audio, paddle);
-
 game.start(loader);
 
 // Farbe des Paddles
@@ -83,11 +84,13 @@ ball.draw = function(ctx, delta) {
 game.add(ball);
 
 // Lücken zwischen und neben den Blöcken
+
+
+
 var padding = 20;
-var xoffset = 65;
+var xoffset = ((800 - ((padding + 2.5 * padding)*columns))/ columns);
 var yoffset = 20;
-var columns = 5;
-var rows = 3;
+
 
 var brickColor = [ex.Color.fromHex("#FFFF00"), ex.Color.fromHex("#ff0000"), ex.Color.fromHex("#00FFFF")];
 var itemColor = [ex.Color.None, ex.Color.None, ex.Color.None];
@@ -118,6 +121,7 @@ bricks.forEach(function(brick) {
   // Block hinzufügen
   game.add(brick);
 });
+
 
 var score = 0;
 var steineübrig = bricks.length;
@@ -231,7 +235,6 @@ ball.on('precollision', function(ev) {
           intro.play();
 
           // Speedup aus dem Item holen
-
           speedup = collisionItem.getSpeed();
 
           ball.vel.x = ball.vel.x * speedup;
@@ -281,10 +284,7 @@ ball.on('precollision', function(ev) {
 
   }
 
-  // reverse course after any collision
-  // intersections are the direction body A has to move to not be clipping body B
-  // `ev.intersection` is a vector `normalize()` will make the length of it 1
-  // `negate()` flips the direction of the vector
+  // Ball ändert seine Richtung, wenn er etwas berührt
   var intersection = ev.intersection.normalize();
   if (Math.abs(intersection.x) > Math.abs(intersection.y)) {
     ball.vel.x *= -1;
