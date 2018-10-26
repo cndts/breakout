@@ -6,23 +6,23 @@
 
 @font-face {
    font-family: Font;
-   src: url(/home/praktikum/git/breakout/sound/fipps/flips.otf);
+   src: url(sound/fipps/flips.otf);
 }
 
 @font-face {
    font-family: Font;
-   src: url(/home/praktikum/git/breakout/sound/fipps/flips.otf);
+   src: url(sound/fipps/flips.otf);
    font-weight: bold;
 }
 
 @font-face {
    font-family: Verloren;
-   src: url(/home/praktikum/git/breakout/sound/Press2Play/press2play.ttf);
+   src: url(sound/Press2Play/press2play.ttf);
 }
 
 @font-face {
    font-family: Verloren;
-   src: url(/home/praktikum/git/breakout/sound/Press2Play/press2play.ttf);
+   src: url(sound/Press2Play/press2play.ttf);
    font-weight: bold;
 }
 

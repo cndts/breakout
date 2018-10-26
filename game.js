@@ -10,10 +10,10 @@ game.setAntialiasing(false);
 game.backgroundColor = ex.Color.fromHex("#000080");
 
 var paddle = new ex.Actor(50, game.drawHeight - 40, 150, 20);
-var audio = new Audio('/home/praktikum/git/breakout/sound/plop.wav');
-var intro = new Audio('/home/praktikum/git/breakout/sound/powerup.wav');
-var verloren = new Audio('/home/praktikum/git/breakout/sound/gameover.wav')
-var gewonnen = new Audio('/home/praktikum/git/breakout/sound/win.wav')
+var audio = new Audio('sound/plop.wav');
+var intro = new Audio('sound/powerup.wav');
+var verloren = new Audio('sound/gameover.wav')
+var gewonnen = new Audio('sound/win.wav')
 
 var loader = new ex.Loader(intro, verloren, gewonnen, audio, paddle);
 game.start(loader);
@@ -93,7 +93,7 @@ var yoffset = 20;
 
 
 var brickColor = [ex.Color.fromHex("#FFFF00"), ex.Color.fromHex("#ff0000"), ex.Color.fromHex("#00FFFF")];
-
+var itemColor = [ex.Color.None, ex.Color.None, ex.Color.None];
 
 var a = 0
 var b = 0
