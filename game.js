@@ -93,7 +93,7 @@ var yoffset = 20;
 
 
 var brickColor = [ex.Color.fromHex("#FFFF00"), ex.Color.fromHex("#ff0000"), ex.Color.fromHex("#00FFFF")];
-var itemColor = [ex.Color.None, ex.Color.None, ex.Color.None];
+
 
 var a = 0
 var b = 0
